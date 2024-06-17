@@ -1,0 +1,30 @@
+-======================================= UPDATES ==============================================
+
+
+--atualiza a similaridade entre usuários com base em interesses musicais compartilhados
+update similaridade as s
+set similaridade = (
+   select round((count(*) * 100) / 
+       (select count(distinct genero) from musica m where m.titulo in 
+           (select distinct tm.musica from tempoMusica tm where tm.userid = s.usuario1)
+       ), 2)
+   from (
+       select distinct m.genero
+       from tempoMusica tm
+       join musica m on tm.musica = m.titulo
+       where tm.userid = s.usuario1 and m.genero in 
+           (select distinct m2.genero from tempoMusica tm2 join musica m2 on tm2.musica = m2.titulo where tm2.userid = s.usuario2)
+   ) as t
+)
+where exists (
+   select 1
+   from usuario u1, usuario u2
+   where u1.id = s.usuario1 and u2.id = s.usuario2
+);
+
+
+-- ajusta a similaridade com base nas idades dos usuários
+update similaridade
+set similaridade = similaridade + 10
+where usuario1 in (select id from usuario where idade between 18 and 30) 
+  and usuario2 in (select id from usuario where idade between 18 and 30);

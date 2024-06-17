@@ -1,0 +1,121 @@
+--======================================= INSERTS ============================================
+ 
+ 
+-- Insets da tabela 'artista'
+INSERT INTO artista (nasc, nome, idade, url) VALUES
+('1987-07-17', 'Kendrick Lamar', 36, 'http://wikipedia.com/Kendrick_Lamar'),
+('1989-03-20', 'BK', 35, 'http://wikipedia.com/BK'),
+('1989-11-08', 'SZA', 34, 'http://wikipedia.com/SZA'),
+('1981-09-04', 'Beyoncé', 42, 'http://wikipedia.com/Beyonce'),
+('1970-06-08', 'Seu Jorge', 53, 'http://wikipedia.com/Seu_Jorge'),
+('1967-11-07', 'David Guetta', 56, 'http://wikipedia.com/David_Guetta'),
+('1985-08-17', 'Emicida', 38, 'http://wikipedia.com/Emicida'),
+('1949-01-27', 'Djavan', 75, 'http://wikipedia.com/Djavan'),
+('1969-06-22', 'Péricles', 54, 'http://wikipedia.com/Péricles'),
+('1998-02-11', 'Khalid', 26, 'http://wikipedia.com/Khalid'),
+('1990-05-15', 'Ariana Grande', 33, 'http://wikipedia.com/Ariana_Grande'),
+('1975-12-18', 'Snoop Dogg', 49, 'http://wikipedia.com/Snoop_Dogg'),
+('1984-03-30', 'Lady Gaga', 40, 'http://wikipedia.com/Lady_Gaga'),
+('1993-09-08', 'Dua Lipa', 30, 'http://wikipedia.com/Dua_Lipa'),
+('1977-11-28', 'Nicki Minaj', 46, 'http://wikipedia.com/Nicki_Minaj'),
+('1987-02-17', 'Ed Sheeran', 37, 'http://wikipedia.com/Ed_Sheeran'),
+('1994-11-05', 'Post Malone', 29, 'http://wikipedia.com/Post_Malone'),
+('1991-04-04', 'Billie Eilish', 33, 'http://wikipedia.com/Billie_Eilish'),
+('1972-10-18', 'Eminem', 51, 'http://wikipedia.com/Eminem'),
+('1981-10-25', 'Katy Perry', 42, 'http://wikipedia.com/Katy_Perry');
+
+-- Inserts da tabela 'usuario'
+INSERT INTO usuario (id, nome, email, endereço, sexo, idade) VALUES
+(034, 'Cauã Pereira', 'caua111@gmail.com', 'Rua iraque, 222, Bairro Brasil', 'M', 21),
+(023, 'Florence Franklin', 'florenceF@hotmail.com', 'Rua Santos, 89, Bairro Silva', 'F', 23),
+(039, 'João Vitor', 'joaovt@outlook.com', '789 Rua Cardoso, 32, Bairro Fonseca', 'M', 22),
+(012, 'Renata Cristini', 'renataS@gmail.com', 'Rua Limão, 67, Bairro Serrado ', 'F', 20),
+(046, 'Rafaela Pereira', 'rafinha@hotmail.com', 'Rua Satelite, 12, Bairro Estados ', 'F', 30),
+(025, 'Arthur Lemes', 'Arthur90@outlook.com', 'Rua Morada, 908, Bairro Azul', 'M', 28),
+(089, 'Giulia Silva', 'SilvaGiuia@gmail.com', 'Rua Março, 76, Bairro Italia', 'F', 31),
+(054, 'Ricardo Rodrigues', 'rricard@gmail.com', 'Rua Messi, 90, Bairro Argentina', 'M', 27),
+(071, 'Leonardo Castro', 'leocastro@hotmail.com', 'Rua Joaquim, 089, Bairro Minas', 'M', 33),
+(059, 'Maria Silva', 'maria123@outlook.com', 'Rua Fidel, 234, Bairro Cuba', 'F', 29);
+
+-- Inserts na tabela 'userNegocio'
+INSERT INTO userNegocio (id, cnpj) VALUES
+(034, '12345678901234'),
+(023, '23456789012345'),
+(039, '34567890123456'),
+(012, '45678901234567'),
+(046, '56789012345678'),
+(025, '67890123456789'),
+(089, '78901234567890'),
+(054, '89012345678901'),
+(071, '90123456789012'),
+(059, '01234567890123');
+
+-- Inserts na tabela 'musica'
+INSERT INTO musica (titulo, nomeArtista, ano, duracao, genero, userUpload) VALUES
+('Money Trees', 'Kendrick Lamar', 2012, 387, 'Hip Hop', '12345678901234'),
+('Até que Durou', 'Péricles', 2018, 300, 'Pagode', '23456789012345'),
+('Um amor puro', 'Djavan', 1999, 328, 'MPB', '34567890123456'),
+('Hold Up', 'Beyoncé', 2016, 300, 'Pop', '45678901234567'),
+('Planos', 'BK', 2018, 120, 'Hip Hop', '56789012345678'),
+('Location', 'Khalid', 2017, 161, 'Pop', '67890123456789'),
+('Kill Bill', 'SZA', 2022, 195, 'R&B', '78901234567890'),
+('Final de Tarde', 'Péricles', 2014, 165, 'Pagode', '89012345678901'),
+('Play Hard', 'David Guetta', 2014, 162, 'Eletronica', '90123456789012'),
+('Oceano', 'Djavan', 2014, 376, 'MPB', '01234567890123'),
+('thank u, next', 'Ariana Grande', 2018, 207, 'Pop', '12345678901234'),
+('Gin and Juice', 'Snoop Dogg', 1993, 214, 'Hip Hop', '23456789012345'),
+('Bad Romance', 'Lady Gaga', 2009, 294, 'Pop', '34567890123456'),
+('New Rules', 'Dua Lipa', 2017, 221, 'Pop', '45678901234567'),
+('Anaconda', 'Nicki Minaj', 2014, 260, 'Hip Hop', '56789012345678'),
+('Shape of You', 'Ed Sheeran', 2017, 233, 'Pop', '67890123456789'),
+('Circles', 'Post Malone', 2019, 215, 'Pop', '78901234567890'),
+('Therefore I Am', 'Billie Eilish', 2020, 174, 'Pop', '89012345678901'),
+('Lose Yourself', 'Eminem', 2002, 326, 'Hip Hop', '90123456789012'),
+('Firework', 'Katy Perry', 2010, 227, 'Pop', '01234567890123');
+
+-- Inserts na tabela 'musicaSingle'
+INSERT INTO musicaSingle (id, titulo) VALUES
+(03,'Play Hard'), (71,'Até que Durou'), (04,'Oceano'), (31,'Final de Tarde'), (12,'Location'),
+(11,'thank u, next'), (49,'New Rules'), (98,'Anaconda'), (57,'Circles'), (61,'Lose Yourself');
+
+-- Inserts na tabela 'musicaHit'
+INSERT INTO musicaHit (id, titulo) VALUES
+(25,'Money Trees'), (85,'Um amor puro'), (65,'Hold Up'), (41,'Planos'), (09,'Kill Bill'),
+(44,'Gin and Juice'), (16,'Bad Romance'), (89,'Shape of You'), (45,'Therefore I Am'), (56,'Firework');
+
+-- Inserts da tabela 'comprasSingle'
+INSERT INTO comprasSingle (idSingle, userid, valor) VALUES
+(03, 059, 191.99), (71, 071, 159.99), (04, 054, 20.99), (31, 089, 129.99), (12, 025, 102.99),
+(61, 046, 130.99), (57, 012, 179.99), (98, 039, 559.99), (49, 023, 999.99), (11, 034, 459.99);
+
+-- Inserts for table 'album'
+INSERT INTO album (id,nome, usuario_id) VALUES
+(434,'Melhores BK', 034), (323,'Só pop', 059), (34,'Djavan Lenda', 071), (232,'Antigas', 054), (230,'Eletronicas', 089),
+(100,'GOAT KENDRICK', 025), (774,'SZA mentirosa', 046), (2,'Para acalmar', 012), (78,'Pagode de domingo', 039), (32,'MPB', 023);
+
+-- Inserts for table 'AlbumHits'
+INSERT INTO AlbumHits (albumId, hitId) VALUES
+(32, 85), (78, 41), (2, 09), (774, 09), (100, 25),
+(230, 56), (232, 16), (34, 85), (323, 89), (434, 41);
+
+-- Inserts for table 'similaridade'
+INSERT INTO similaridade (usuario1, usuario2, similaridade) VALUES
+(034, 012, 80), (046, 089, 70), (059, 071, 60), (054, 089, 50), (034, 023, 40),
+(023, 039, 30), (039, 046, 20), (046, 025, 10), (059, 012, 5), (054, 039, 85);
+
+-- Inserts for table 'tempoMusica'
+INSERT INTO tempoMusica (musica, userID, tempoSegundos) VALUES
+('Bad Romance', 059, 180), ('thank u, next', 071, 210), ('Circles', 054, 195), ('Firework', 089, 240), ('Final de Tarde', 025, 170),
+('Money Trees', 034, 220), ('Oceano', 023, 185), ('Play Hard', 039, 250), ('Kill Bill', 012, 200), ('Hold Up', 046, 230);
+
+-- Inserts for table 'tempoArtista'
+INSERT INTO tempoArtista (artista, userID, tempoSegundos) VALUES
+('Ed Sheeran', 059, 580), ('Emicida', 071, 232), ('Seu Jorge', 054, 155), ('Post Malone', 089, 209), ('Beyoncé', 025, 110),
+('Kendrick Lamar', 034, 320), ('Snoop Dogg', 023, 285), ('Khalid', 039, 450), ('SZA', 012, 200), ('Dua Lipa', 046, 234);
+
+-- Inserts for table 'blacklist'
+INSERT INTO blacklist (userID, musica) VALUES
+(034, 'Circles'), (059, 'Kill Bill'), (023, 'Anaconda'), (039, 'Shape of You'), (012, 'Oceano'),
+(046, 'New Rules'), (025, 'Lose Yourself'), (089, 'Até que Durou'), (054, 'Location'), (071, 'Play Hard');
+ 
+

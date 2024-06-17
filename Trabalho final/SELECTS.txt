@@ -1,0 +1,135 @@
+--======================================= SELECTS ============================================
+
+
+--Organiza as musicas Singles que deram mais lucro
+
+select m.titulo, m.nomeArtista, sum(c.valor)
+from musica m, comprasSingle c, musicaSingle ms
+where c.idSingle = ms.id AND ms.titulo = m.titulo
+group by m.titulo
+order by sum(c.valor) DESC; 
+
+
+--musica mais ouvida de cada artista
+
+with Mais_ouvidas as( --tempo total de cada musica de artista e quantas vezes aparece; Agrupado por tempo
+select m.NomeArtista as artista, t.musica, SUM(t.tempoSegundos) AS tempoTotalSegundos, 
+	ROW_NUMBER() OVER (PARTITION BY m.nomeArtista ORDER BY sum(t.tempoSegundos) DESC) AS rn
+from tempoMusica t, musica m
+where t.musica = m.titulo
+GROUP BY m.nomeArtista, t.musica
+)
+
+select artista, musica, tempoTotalSegundos / 60 AS tempoOuvidoMinutos --seleciona apenas o primeiro de cada artista ou seja o maior tempo
+from Mais_ouvidas
+where rn = 1;
+
+
+--mais ouvida por faixa de idade
+with usuario_idade as( --classifica a faixa de cada usuario
+	select id, idade, 
+	case
+		when idade between 0 and 17 then '0-17'
+		when idade between 18 and 30 then '18-30'
+		when idade between 31 and 45 then '31-45'
+		else '46+'
+	end as faixa_idade
+	from usuario
+),
+genero_tempo as(
+	select u.faixa_idade, m.genero,
+        sum(t.tempoSegundos) AS tempoTotalSegundos
+    from usuario_idade u, tempoMusica t, musica m
+	where u.id = t.userID and t.musica = m.titulo
+    group by
+        u.faixa_idade, m.genero
+),
+faixa_tempo as(
+	select faixa_idade, sum(tempoTotalSegundos) as tempoTotalFaixa
+	from genero_tempo
+	group by faixa_idade
+)
+
+select g.faixa_idade, g.genero AS estilo_preferido, g.tempoTotalSegundos / 60 AS tempoOuvidoMinutos
+from genero_tempo g, faixa_tempo f
+where g.faixa_idade = f.faixa_idade AND
+g.tempoTotalSegundos = ( select  max(tempoTotalSegundos)
+        from genero_tempo
+        where faixa_idade = g.faixa_idade
+    );
+
+
+--publico alvo de cada artista
+
+with artistas_genero AS ( --conta quantos usuarios m ou femininos ouvem o artista 
+    select  m.nomeArtista, u.sexo, COUNT(DISTINCT u.id) AS numOuvintes
+    from musica m, tempoMusica t, usuario u
+	where t.musica = m.titulo and u.id = t.userID
+    group by m.nomeArtista, u.sexo
+),
+publico_alvo AS ( --e ordena por quantidade e classifica com rn
+    select nomeArtista, sexo, ROW_NUMBER() OVER(PARTITION BY nomeArtista ORDER BY numOuvintes DESC) AS rn
+    from artistas_genero
+)
+select nomeArtista, sexo as publico_alvo
+from publico_alvo
+where rn = 1;
+
+
+--Mostra o usuario que mais gastou na plataforma
+select c.userid, u.nome, sum(c.valor)
+from comprassingle c, usuario u
+where c.userid = u.id
+group by c.userid, u.nome
+order by sum(c.valor) DESC
+limit 1;
+
+
+--Artista mais ouvido no aplicativo
+with tempo_total as(
+	select m.nomeartista, sum(t.tempoSegundos) as tempoTotal
+	from musica m,tempoMusica t
+	where m.titulo = t.musica
+	group by m.nomeartista
+)
+select nomeArtista, tempoTotal/60 as TempoTotal
+from tempo_total
+order by TempoTotal desc
+limit 1;
+
+
+--genero de musica mais ouvido no geral
+select m.genero, (sum(tm.tempoSegundos)/60) AS Tempo_Total
+from musica m, tempoMusica tm
+where m.titulo = tm.musica
+group by m.genero
+order by sum(tm.tempoSegundos/60) DESC
+LIMIT 1;
+
+
+--nome e cnpj do usuario que mais fez upload de musicas
+SELECT u.nome, un.cnpj, COUNT(*) AS total_uploads
+FROM musica m, userNegocio un, Usuario u
+where m.userupload = un.cnpj AND un.id = u.id
+GROUP BY u.nome, un.cnpj
+ORDER BY total_uploads DESC
+LIMIT 1;
+
+
+
+--Album mais vendido
+select a.nome AS album, COUNT(*) AS total_vendas
+from album a, AlbumHits ah, musicaHit mh
+where a.id = ah.albumId and ah.hitId = mh.id
+group by a.nome
+order by total_vendas desc
+LIMIT 1;
+
+
+--Quantidade de ouvintes de cada estilo de musica
+select m.genero, count(distinct t.userID) as numOuvintes
+from musica m, tempoMusica t
+where m.titulo = t.musica
+group by  m.genero
+order by numOuvintes DESC;
+

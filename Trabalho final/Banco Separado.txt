@@ -1,0 +1,249 @@
+--============================= CREAT TABLE =================================
+
+DROP SCHEMA IF EXISTS musicmatic CASCADE;
+CREATE SCHEMA musicmatic;
+SET search_path TO musicmatic;
+ 
+create table artista(
+	nasc DATE not null,
+	nome varchar(200) constraint artistaPK primary key,
+	idade INT,
+	url varchar(300)
+ 
+);
+ 
+create table usuario(
+	id int primary key,
+	nome varchar(250),
+	email varchar(250),
+	endereço varchar(250),
+	sexo char,
+	idade int
+);
+ 
+create table userNegocio (
+	id int,
+	cnpj varchar(20) primary key,
+	foreign key(id) references usuario(id)
+);
+ 
+create table musica (
+    titulo VARCHAR(200),
+	nomeArtista varchar(200) not null,
+    ano INT,
+    duracao int not null, --EM SEGUNDOS
+    genero VARCHAR(200),
+	userUpload varchar(20), --CADA MUSICA DEVE SER INCLUIDA POR UM USER DE NEGOCIOS
+	primary key(titulo),
+	foreign key(nomeArtista) references artista(nome),
+	foreign key(userUpload) references userNegocio(cnpj)
+);
+ 
+create table musicaSingle(
+	id int primary key,
+	titulo varchar(200) not null,
+	foreign key(titulo) references musica(titulo)
+);
+ 
+create table musicaHit(
+	id int primary key,
+	titulo varchar(200) not null,
+	foreign key(titulo) references musica(titulo)
+);
+ 
+create table comprasSingle(
+	id serial primary key,
+	idSingle int  not null,
+	userid int not null,
+	valor decimal(5,2),
+	
+	foreign key(idSingle) references musicaSingle(id), 
+	foreign key(userid) references usuario(id)
+);
+ 
+create table album (
+    id int primary key,
+    nome varchar(200) NOT NULL,
+    usuario_id INT NOT NULL references usuario(id),
+    unique (nome, usuario_id)
+);
+ 
+create table AlbumHits(
+	id serial primary key,
+	albumId int not null,
+	hitId int not null,
+	posicao serial,
+	unique (albumId, hitID),
+	
+	foreign key(albumId) references album(id),
+	foreign key(hitId) references musicaHit(id)
+);
+ 
+create table similaridade(
+	usuario1 int not null,
+	usuario2 int not null,
+	similaridade int,
+	unique(usuario1, usuario2),
+	check(usuario1 <> usuario2),
+	check(similaridade >= 0 AND similaridade <=100), --pode variar de 0 a 100, sendo 100 gostos iguais
+	
+	foreign key(usuario1) references usuario(id),
+	foreign key(usuario2) references usuario(id)
+);
+ 
+create table tempoMusica(
+	id serial,
+	musica varchar(200),
+	userID int, 
+	tempoSegundos int,
+	
+	foreign key(musica) references musica(titulo),
+	foreign key (userID) references usuario(id)
+);
+ 
+create table tempoArtista(
+	artista varchar(200),
+	userID int,
+	tempoSegundos int,
+	
+	foreign key(artista) references artista(nome),
+	foreign key(userID) references usuario(id)
+);
+
+
+create table blacklist(
+	userID int,
+	musica varchar(200),
+	foreign key (userID) references usuario(id),
+	foreign key(musica) references musica(titulo)
+);
+ 
+
+
+--======================================= TRIGGERS ============================================
+
+
+--CALC IDADE PELA DATA DE NASC
+create or replace function calc_Idade()
+returns trigger as $$
+declare 
+	dataNasc DATE;
+	idade int;
+BEGIN
+	dataNasc := new.nasc;
+	idade := DATE_PART('year', CURRENT_DATE) - DATE_PART('year', dataNasc);
+	
+	--Analisa mes e dia
+	IF DATE_PART('month', CURRENT_DATE) < DATE_PART('month', dataNasc)
+       OR (DATE_PART('month', CURRENT_DATE) = DATE_PART('month', dataNasc)
+       AND DATE_PART('day', CURRENT_DATE) < DATE_PART('day', dataNasc)) THEN
+        idade := idade - 1;
+    END IF;
+	
+	new.idade := idade;
+	
+	return new;
+end;
+$$ language plpgsql;
+ 
+ 
+create trigger trigger_calcIdade
+before insert on artista
+for each row
+execute function calc_Idade();
+ 
+ 
+--adiciona o tempo de musica que cada usuario ouviu 
+ 
+create or replace function add_tempo()
+returns trigger as $$
+begin
+	if exists(
+		select 1 from tempoMusica t
+		where t.musica = new.musica and t.userID = new.userID
+	)then
+		update tempoMusica
+		set tempoSegundos = tempoSegundos + new.temposegundos
+		where musica = new.musica and userID = new.userID;
+		return null;
+	END if;
+	
+	return new;
+	end;
+	$$language plpgsql;
+	
+	
+create trigger trigger_addTempo
+before insert on tempoMusica
+for each row
+execute function add_tempo();
+	
+
+--add tempo ouvido dos artistas
+create or replace function add_tempo_artista()
+returns trigger as $$
+begin
+    if exists(
+        select 1
+        from tempoArtista ta
+        where ta.artista = (select nomeArtista from musica where titulo = new.musica)
+        AND ta.userID = new.userID
+    ) then
+        update tempoArtista
+        set tempoSegundos = tempoSegundos + new.tempoSegundos
+        where artista = (select nomeArtista from musica where titulo = new.musica)
+        and userID = new.userID;
+    else
+        insert into tempoArtista (artista, userID, tempoSegundos)
+        values ((select nomeArtista from musica where titulo = new.musica), new.userID, new.tempoSegundos);
+    END IF;
+
+    return new;
+end;
+$$ LANGUAGE plpgsql;
+
+
+create trigger trigger_addTempo_artista
+before insert on tempoMusica
+for each row
+execute function add_tempo_artista();
+
+
+
+--===================================== Stored Procedure =================================
+ 
+ 
+create or replace procedure registrar_compra_musica(
+    in p_titulo varchar(200),
+    in p_user_id int,
+    in p_valor decimal(5,2),
+    in p_idcompra int
+)
+language plpgsql
+as $$
+begin
+    -- verifica se a música existe no banco de dados
+    if not exists (select 1 from musica where titulo = p_titulo) then
+        raise exception 'a música especificada não existe.';
+    end if;
+ 
+    -- verifica se o usuário existe no banco de dados
+    if not exists (select 1 from usuario where id = p_user_id) then
+        raise exception 'o usuário especificado não existe.';
+    end if;
+
+    -- verifican se a música desejada já foi vendida
+    if exists (select 1 from comprassingle where idsingle = (select id from musicasingle m where m.titulo = p_titulo )) 
+    then
+        raise exception 'a música já foi vendida.';
+    end if;
+ 
+    -- registra a compra na tabela comprassingle
+    insert into comprassingle (idsingle, userid, valor)
+    values ((select id from musicasingle where titulo = p_titulo), p_user_id, p_valor);
+end;
+$$;
+
+
+--call registrar_compra_musica('Play Hard', 039, 191.99, 456);
+
