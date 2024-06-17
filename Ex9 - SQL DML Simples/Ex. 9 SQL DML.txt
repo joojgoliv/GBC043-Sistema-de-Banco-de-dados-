@@ -1,0 +1,188 @@
+--a) Todos os cursos da universidade. 
+Select c.nome
+From Curso c;
+/*ENGENHARIA CIVIL
+CIENCIA DA COMPUTAÇÃO
+DIREITO
+PEDAGOGIA
+ODONTO
+*/
+
+
+--b) Quais os nomes e telefones de alunos da cidade de São Carlos - SP em ordem DESC de nome. 
+select a.nome, a.telefone
+from aluno a
+where a.cidade = 'SAO CARLOS - SP'
+order by a.nome DESC;
+/*
+"EDVALDO CARLOS SILVA                                                  "	"(017)276-9999            "
+"JOAO BENEDITO SCAPIN                                                  "	"(017)273-8974            "
+"MARCOS JOAO CASANOVA                                                  "	"(017)274-9874            "
+"SIMONE CRISTINA LIMA                                                  "	"(017)273-9865            "
+"JOSE PAULO FIGUEIRA                                                   "	"(017)274-9873            "
+*/
+
+--c) Quais os nomes de professores que foram contratados antes de 01/jan/1993.
+SELECT nome
+from professor
+where admissao <= '01/01/1993';
+/*
+ABGAIR SIMON FERREIRA
+*/
+
+--d) Quais os nomes de alunos que iniciam com a letra 'J'.
+SELECT nome 
+from aluno
+where nome like 'J%';
+/*
+JOAO BENEDITO
+JOSE PAULO FIGUEREDO
+*/
+
+
+--e) Quais os nomes das disciplinas do curso de Ciência da Computação
+Select d.nome
+from curso c, disciplinaCurso dc, disciplina d
+where c.numCurso = dc.numcurso AND d.numdisp = dc.numdisp;
+/*
+"BANCO DE DADOS                "
+"ESTRUTURA DE DADOS            "
+"DIREITO PENAL                 "
+"CALCULO NUMERICO              "
+"CALCULO NUMERICO              "
+"PSICOLOGIA INFANTIL           "
+"DIREITO TRIBUTARIO            "
+"ENGENHARIA DE SOFTWARE        "
+*/
+
+--f) Quais os nomes dos cursos que possuem no curriculum a disciplina Cálculo Numérico. 
+select c.nome
+from curso c, disciplinaCurso dc, disciplina d
+where c.numCurso = dc.numcurso AND d.numdisp = dc.numdisp
+		AND d.nome = 'CALCULO NUMERICO';
+		
+/*
+"CIENCIA DA COMPUTACAO         "
+"ENGENHARIA CIVIL              "
+*/
+
+
+--g) Quais os nomes das disciplina que o aluno Marcos João Casanova cursou no 1º semestre de 1998. 
+select d.nome
+from disciplina d, aluno a, aula au
+where a.nome = 'MARCOS JOAO CASANOVA' AND a.numaluno = au.numaluno 
+		AND au.semestre = '01/1998' AND d.numdisp = au.numdisp;
+
+/*
+"BANCO DE DADOS                "
+"ESTRUTURA DE DADOS            "
+"CALCULO NUMERICO              "
+"ENGENHARIA DE SOFTWARE        "
+*/
+
+
+--h) Quais os nomes das disciplinas que o aluno Ailton Castro foi reprovado
+select d.nome
+from disciplina d, aluno a, aula au
+where a.nome = 'AILTON CASTRO' AND a.numaluno = au.numaluno 
+		 AND d.numdisp = au.numdisp AND au.nota < 6;
+
+--"CALCULO NUMERICO              "
+
+--i) Quais os nomes de alunos reprovados na disciplina de Cálculo Numérico no 1º semestre de 1998.
+select a.nome
+from disciplina d, aluno a, aula au
+where a.numaluno = au.numaluno AND d.nome = 'CALCULO NUMERICO'
+	AND d.numdisp = au.numdisp AND au.nota < 6 AND au.semestre = '01/1998';
+--"AILTON CASTRO                                                         "
+
+
+--j) Quais os nomes das disciplinas ministradas pelo prof. Ramon Travanti. 
+select d.nome
+from disciplina d, professor p, aula au
+where p.numfunc = au.numfunc and d.numdisp = au.numdisp
+	and p.nome = 'RAMON TRAVANTI';
+	
+/*
+"DIREITO PENAL                 "
+"DIREITO PENAL                 "
+"DIREITO TRIBUTARIO            "
+*/
+
+
+--k) Quais os nomes dos professores que já ministraram aula de Banco de Dados. 
+SELECT P.NOME
+from disciplina d, professor p, aula au
+where p.numfunc = au.numfunc and d.numdisp = au.numdisp
+	and d.nome = 'BANCO DE DADOS';
+	/*
+	"ABGAIR SIMON FERREIRA                                                 "
+"ABGAIR SIMON FERREIRA                                                 "
+	*/
+	
+
+/*
+l) Quais os nomes de alunos que cursaram o 1º semestre de 1998 em ordem
+alfabética, em cada disciplina oferecida nesse semestre 
+(listar também os nomes das 
+disciplinas e os nomes dos professores que ministraram cada disciplina). 
+*/
+select a.nome, d.nome
+from aluno a, disciplina d, aula au
+where a.numaluno = au.numaluno and d.numdisp = au.numdisp
+	and au.semestre = '01/1998'
+order by a.nome;
+/*
+"AILTON CASTRO                                                         "	"ENGENHARIA DE SOFTWARE        "
+"AILTON CASTRO                                                         "	"CALCULO NUMERICO              "
+"CAROL ANTONIA SILVEIRA                                                "	"PSICOLOGIA INFANTIL           "
+"EDVALDO CARLOS SILVA                                                  "	"CALCULO NUMERICO              "
+"EDVALDO CARLOS SILVA                                                  "	"ESTRUTURA DE DADOS            "
+"EDVALDO CARLOS SILVA                                                  "	"BANCO DE DADOS                "
+"EDVALDO CARLOS SILVA                                                  "	"ENGENHARIA DE SOFTWARE        "
+"JOAO BENEDITO SCAPIN                                                  "	"CALCULO NUMERICO              "
+"JOAO BENEDITO SCAPIN                                                  "	"ENGENHARIA DE SOFTWARE        "
+"MARCOS JOAO CASANOVA                                                  "	"CALCULO NUMERICO              "
+"MARCOS JOAO CASANOVA                                                  "	"ENGENHARIA DE SOFTWARE        "
+"MARCOS JOAO CASANOVA                                                  "	"ESTRUTURA DE DADOS            "
+"MARCOS JOAO CASANOVA                                                  "	"BANCO DE DADOS                "
+"SIMONE CRISTINA LIMA                                                  "	"DIREITO TRIBUTARIO            "
+"SIMONE CRISTINA LIMA                                                  "	"DIREITO PENAL                 "
+
+*/
+
+--m) Quais nomes de alunos, nomes de disciplinas e notas do 1º semestre de 1998 no curso de Ciência da Computação. 
+
+select a.nome, d.nome, au.nota
+from aluno a, disciplina d, aula au, curso c, disciplinacurso dc
+where a.numaluno = au.numaluno and d.numdisp = au.numdisp
+	and au.semestre = '01/1998' and c.numcurso = dc.numcurso
+	AND dc.numdisp = d.numdisp
+	and c.nome = 'CIENCIA DA COMPUTACAO'
+order by a.nome;
+
+/*
+"AILTON CASTRO                                                         "	"CALCULO NUMERICO              "	"3.50"
+"AILTON CASTRO                                                         "	"ENGENHARIA DE SOFTWARE        "	"8.50"
+"EDVALDO CARLOS SILVA                                                  "	"CALCULO NUMERICO              "	"8.00"
+"EDVALDO CARLOS SILVA                                                  "	"BANCO DE DADOS                "	"8.50"
+"EDVALDO CARLOS SILVA                                                  "	"ENGENHARIA DE SOFTWARE        "	"10.00"
+"EDVALDO CARLOS SILVA                                                  "	"ESTRUTURA DE DADOS            "	"6.00"
+"JOAO BENEDITO SCAPIN                                                  "	"CALCULO NUMERICO              "	"7.00"
+"JOAO BENEDITO SCAPIN                                                  "	"ENGENHARIA DE SOFTWARE        "	"5.50"
+"MARCOS JOAO CASANOVA                                                  "	"CALCULO NUMERICO              "	"6.50"
+"MARCOS JOAO CASANOVA                                                  "	"ENGENHARIA DE SOFTWARE        "	"9.50"
+"MARCOS JOAO CASANOVA                                                  "	"ESTRUTURA DE DADOS            "	"8.00"
+"MARCOS JOAO CASANOVA                                                  "	"BANCO DE DADOS                "	"7.00"
+*/
+
+
+
+
+
+
+
+
+
+
+
