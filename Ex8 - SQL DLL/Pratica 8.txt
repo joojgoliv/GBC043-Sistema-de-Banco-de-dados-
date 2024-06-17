@@ -1,0 +1,63 @@
+SET search_path TO locadora;
+
+create table CLIENTE(
+	numCliente int not null,
+	nome varchar(50) not null,
+	endereco varchar(100),
+	telResi varchar(10),
+	telCel varchar(12),
+	constraint cliPK PRIMARY KEY (numCLiente)
+);
+ 
+create table ATOR(
+	cod int not null,
+	datanasc DATE,
+	nacionalidade varchar(50),
+	nomeReal varchar (50) not null,
+	nomeArt varchar(50),
+	CONSTRAINT atorPK PRIMARY KEY (cod)
+);
+ 
+
+create table classificacao(
+	cod int primary key,
+	nome varchar(50),
+	preco decimal(5,2)
+);
+
+
+create table FILME(
+	numFilme int not null primary key,
+	titulo_original varchar(50),
+	titulo_pt varchar(50),
+	duracao int , --minutos
+	data_lancamento DATE,
+	direcao varchar(70),
+	categoria varchar(50),
+	classificacao int REFERENCES classificacao(cod)
+);
+
+create table midia(
+	numfilme int not null references FILME(numFilme),
+	numero int not null primary key,
+	tipo varchar(50) not null
+);
+
+CREATE TABLE emprestimo(
+  num_filme  int NOT NULL,
+  numero int NOT NULL,	
+  tipo varchar(50),
+  cliente int Not NULL,
+  dataret date,
+  datadev date,
+  valor_pg decimal(5,2) NOT NULL,
+  CONSTRAINT emprestismfk FOREIGN KEY(numero) REFERENCES midia(numero),
+	CONSTRAINT emprestimoFk FOREIGN KEY(cliente) REFERENCES cliente(numcliente)
+);
+
+CREATE TABLE estrela(
+  numfilme int NOT NULL,
+  codator int NOT NULL,
+CONSTRAINT estrelafk FOREIGN KEY (numfilme) REFERENCES FILME(numfilme),
+CONSTRAINT estrelafk1 FOREIGN KEY (codator) REFERENCES midia(numero)
+);
