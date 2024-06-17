@@ -1,0 +1,66 @@
+Nomes: Cauã Pereira Neres 12021BCC005
+	Florence Franklin Jeronimo 11921BCC006
+	João Vitor Gonçalves 11921BCC024
+
+->Responda: Qual a saída?
+Resposta: Dave(1 row)
+
+->Responda: Qual a nova saída?
+Reposta: David(1 row)
+
+->Responda: Quais as saídas?
+Reposta: 
+
+atributo11  |	atributo12
+------------+------------
+          1 | Robert
+(1 row)
+
+
+ atributo11 | atributo12
+------------+------------
+          1 | David
+(1 row)
+
+
+ atributo21 | atributo22
+------------+------------
+(0 rows)
+
+
+->Responda: Qual a saída(pag 16)?
+Reposta:
+
+ atributo11 | atributo12
+------------+------------
+          1 | Robert
+(1 row)
+
+
+->Responda: Qual a saída(pag 17)?
+Reposta:
+
+ atributo21 | atributo22
+------------+------------
+          2 | Arthur
+(1 row)
+
+
+->Responda: Qual a saída(pag 17)?
+Reposta:
+
+ atributo21 | atributo22
+------------+------------
+(0 rows)
+
+
+->Resposta DeadLock:
+ERROR:  deadlock detected
+
+DETAIL:  Process 6248 waits for ShareLock on transaction 808; blocked by process 3548.
+Process 3548 waits for ShareLock on transaction 809; blocked by process 6248.
+
+HINT:  See server log for query details.
+
+CONTEXT:  while updating tuple (0,1) in relation "cliente"
+postgres=!#
